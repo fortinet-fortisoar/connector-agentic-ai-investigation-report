@@ -1,0 +1,90 @@
+{
+    "name": "agentic-ai-investigation-report",
+    "version": "1.0.0",
+    "label": "Agentic AI Investigation Report",
+    "description": "Creates AI-generated investigation report that helps streamline analysis and accelerate incident response",
+    "publisher": "Fortinet",
+    "icon_small_name": "",
+    "icon_large_name": "",
+    "id": 22,
+    "configuration": {},
+    "operations": [
+        {
+            "operation": "generate_investigation_pdf",
+            "title": "Generate Investigation Report",
+            "description": "Creates alert investigation report",
+            "enabled": true,
+            "category": "utilities",
+            "annotation": "",
+            "output_schema": {
+                "result": "",
+                "api_data": ""
+            },
+            "parameters": [
+                {
+                    "title": "Investigation JSON",
+                    "type": "object",
+                    "name": "investigationJSON",
+                    "tooltip": "Investigation JSON to process",
+                    "required": true,
+                    "visible": true,
+                    "editable": true,
+                    "value": null
+                },
+                {
+                    "title": "Output File Name",
+                    "type": "text",
+                    "name": "outputFileName",
+                    "tooltip": "Enter the expected name of the report file",
+                    "required": true,
+                    "visible": true,
+                    "editable": true,
+                    "value": "/tmp/myReport.pdf"
+                },
+                {
+                    "title": "Alert Name",
+                    "type": "text",
+                    "name": "alertName",
+                    "tooltip": "Alert name for which the report is being generated",
+                    "required": true,
+                    "visible": true,
+                    "editable": true,
+                    "value": ""
+                },
+                {
+                    "title": "Alert ID",
+                    "type": "text",
+                    "name": "alertid",
+                    "tooltip": "ID of the alert for which the report is being generated",
+                    "required": true,
+                    "visible": true,
+                    "editable": true,
+                    "value": ""
+                },
+                {
+                    "title": "Knowledge Base - Questions",
+                    "type": "text",
+                    "name": "kbQuestions",
+                    "tooltip": "Questions from Knowledge Base which is used for AI investigation",
+                    "required": true,
+                    "visible": true,
+                    "editable": true,
+                    "value": ""
+                }
+            ],
+            "open": false
+        }
+    ],
+    "category": [
+        "Compliance and Reporting"
+    ],
+    "contributor": null,
+    "active": true,
+    "cs_compatible": true,
+    "system": false,
+    "playbook_collections": [],
+    "icon_small": "",
+    "icon_large": "",
+    "help_online": null,
+    "vendor_version": null
+}

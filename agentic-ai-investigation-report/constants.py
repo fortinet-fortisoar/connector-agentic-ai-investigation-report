@@ -1,0 +1,1 @@
+LOGGER_NAME = 'agentic-ai-investigation-report'
