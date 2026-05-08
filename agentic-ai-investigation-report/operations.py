@@ -18,8 +18,6 @@ import os
 import re
 from collections import Counter
 
-
-
 def _mitre_color(count):
     if count == 0:
         return colors.whitesmoke
@@ -186,8 +184,56 @@ def generate_investigation_pdf(config, params, *args, **kwargs):
     # ------------------------------------------------
     # Knowledge Base Questions
     # ------------------------------------------------
-    story.append(Paragraph("<b>Knowledge Base Questions</b><br/>", styles["Heading2"]))
-    story.append(Paragraph(f"{kb_questions}"))
+    styles = getSampleStyleSheet()
+    table_cell_style = styles["BodyText"]
+    table_cell_style.wordWrap = 'CJK'
+    story.append(Paragraph("<b>Knowledge Base Questions</b>", styles["Heading2"]))
+
+    table_data = [["Question"]]
+    end_index = len(kb_questions) - 1
+    for kbq in kb_questions[1:end_index]:
+        wrapped_kbq = Paragraph(kbq, table_cell_style)
+        table_data.append([[wrapped_kbq]])
+    
+    table = Table(table_data, colWidths=[500])
+    table.setStyle(TableStyle([
+        ("GRID", (0, 0), (-1, -1), 1, colors.grey),
+        ("BACKGROUND", (0, 0), (-1, 0), colors.orange),
+        ("FONT", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("VALIGN", (0, 0), (-1, -1), "TOP")]))
+
+    story.append(Spacer(1, 8))
+    story.append(table)
+    story.append(PageBreak())
+
+    # ------------------------------------------------
+    # All Questions Asked During Investigation
+    # ------------------------------------------------
+
+    all_questions = data.get("all_questions")
+    styles = getSampleStyleSheet()
+    table_cell_style = styles["BodyText"]
+    table_cell_style.wordWrap = 'CJK'
+    story.append(Paragraph("<b>All Questions Asked During Investigation</b>", styles["Heading2"]))
+
+    table_data = [["Question", "Agent","Result"]]
+    for q in all_questions:
+        question = q.get('question')
+        agent_name = q.get('agent') if q.get('agent') is not None else "Null"
+        result = q.get('result') if q.get('result') is not None else "Null"
+        wrapped_questions = Paragraph(question, table_cell_style)
+        wrapped_agent_name = Paragraph(agent_name, table_cell_style)
+        wrapped_result = Paragraph(result, table_cell_style)
+        table_data.append([[wrapped_questions], [wrapped_agent_name], [wrapped_result]])
+
+    table = Table(table_data, colWidths=[350, 75, 75])
+    table.setStyle(TableStyle([
+        ("GRID", (0, 0), (-1, -1), 1, colors.grey),
+        ("BACKGROUND", (0, 0), (-1, 0), colors.orange),
+        ("FONT", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("VALIGN", (0, 0), (-1, -1), "TOP")]))
+    story.append(table)
+
     story.append(PageBreak())
 
     # ------------------------------------------------
