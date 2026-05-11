@@ -1,481 +1,90 @@
 {
-  "type": "workflow_collections",
-  "data": [
-    {
-      "@type": "WorkflowCollection",
-      "name": "Sample - Agentic AI Investigation Report - 1.0.0",
-      "description": "Sample playbooks for \"Agentic AI Investigation Report\" connector. If you are planning to use any of the sample playbooks in your environment, ensure that you clone those playbooks and move them to a different collection, since the sample playbook collection gets deleted during connector upgrade and uninstall.",
-      "visible": true,
-      "image": null,
-      "uuid": "891d144c-6d2e-41fa-bbb3-480c85f0b8d0",
-      "id": 73,
-      "deletedAt": null,
-      "importedBy": [],
-      "recordTags": [],
-      "workflows": [
+    "name": "agentic-ai-investigation-report",
+    "version": "1.0.0",
+    "label": "Agentic AI Investigation Report",
+    "description": "Creates AI-generated investigation report that helps streamline analysis and accelerate incident response",
+    "publisher": "",
+    "icon_small_name": "",
+    "icon_large_name": "",
+    "id": 22,
+    "configuration": {},
+    "operations": [
         {
-          "@type": "Workflow",
-          "triggerLimit": null,
-          "name": "Generate Investigation Report",
-          "aliasName": null,
-          "tag": null,
-          "description": null,
-          "isActive": true,
-          "debug": true,
-          "singleRecordExecution": false,
-          "remoteExecutableFlag": false,
-          "parameters": [],
-          "synchronous": false,
-          "lastModifyDate": 1777971173,
-          "collection": "/api/3/workflow_collections/891d144c-6d2e-41fa-bbb3-480c85f0b8d0",
-          "versions": [],
-          "triggerStep": "/api/3/workflow_steps/b8569279-faad-499f-b632-5cc9647c7466",
-          "steps": [
-            {
-              "@type": "WorkflowStep",
-              "name": "Add All Questions to Input json",
-              "description": null,
-              "arguments": {
-                "input_json": "{%do vars.steps.Make_API_call_for_Result.data.update({'all_questions': vars.all_questions}) %}\n{{vars.steps.Make_API_call_for_Result.data}}"
-              },
-              "status": null,
-              "top": "1245",
-              "left": "475",
-              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
-              "group": null,
-              "uuid": "aae1c231-d8df-40aa-8338-489a6b4524a5"
+            "operation": "generate_investigation_pdf",
+            "title": "Generate Investigation Report",
+            "description": "Creates alert investigation report",
+            "enabled": true,
+            "category": "utilities",
+            "annotation": "",
+            "output_schema": {
+                "result": "",
+                "api_data": ""
             },
-            {
-              "@type": "WorkflowStep",
-              "name": "Add Hypothesis Questions to Input json",
-              "description": null,
-              "arguments": {
-                "input_json": "{%do vars.steps.Make_API_call_for_Result.data.update({'questions': vars.questions})%}\n{{vars.steps.Make_API_call_for_Result.data}}"
-              },
-              "status": null,
-              "top": "1110",
-              "left": "475",
-              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
-              "group": null,
-              "uuid": "70b74c4d-4634-40e3-aa32-60b73f6f0b34"
-            },
-            {
-              "@type": "WorkflowStep",
-              "name": "Call KB Agent",
-              "description": null,
-              "arguments": {
-                "params": {
-                  "iri": "/api/ai/agents/knowledge/trigger",
-                  "body": "{\n    \"scope\": \"knowledge\",\n    \"query\":\"{{vars.input.records[0].name}}\"\n\n}",
-                  "method": "POST"
+            "parameters": [
+                {
+                    "title": "Investigation JSON",
+                    "type": "object",
+                    "name": "investigationJSON",
+                    "tooltip": "Investigation JSON to process",
+                    "required": true,
+                    "visible": true,
+                    "editable": true,
+                    "value": null
                 },
-                "version": "3.7.1",
-                "connector": "cyops_utilities",
-                "operation": "make_cyops_request",
-                "operationTitle": "FSR: Make FortiSOAR API Call",
-                "step_variables": {
-                  "task_id": "{{vars.steps.Call_KB_Agent.data.task_id}}"
+                {
+                    "title": "Output File Name",
+                    "type": "text",
+                    "name": "outputFileName",
+                    "tooltip": "Enter the expected name of the report file",
+                    "required": true,
+                    "visible": true,
+                    "editable": true,
+                    "value": "/tmp/myReport.pdf"
+                },
+                {
+                    "title": "Alert Name",
+                    "type": "text",
+                    "name": "alertName",
+                    "tooltip": "Alert name for which the report is being generated",
+                    "required": true,
+                    "visible": true,
+                    "editable": true,
+                    "value": ""
+                },
+                {
+                    "title": "Alert ID",
+                    "type": "text",
+                    "name": "alertid",
+                    "tooltip": "ID of the alert for which the report is being generated",
+                    "required": true,
+                    "visible": true,
+                    "editable": true,
+                    "value": ""
+                },
+                {
+                    "title": "Knowledge Base - Questions",
+                    "type": "text",
+                    "name": "kbQuestions",
+                    "tooltip": "Questions from Knowledge Base which is used for AI investigation",
+                    "required": true,
+                    "visible": true,
+                    "editable": true,
+                    "value": ""
                 }
-              },
-              "status": null,
-              "top": "300",
-              "left": "475",
-              "stepType": "/api/3/workflow_step_types/0109f35d-090b-4a2b-bd8a-94cbc3508562",
-              "group": null,
-              "uuid": "375da1eb-f7bc-4432-9c46-7be4b6aa862f"
-            },
-            {
-              "@type": "WorkflowStep",
-              "name": "Configuration",
-              "description": null,
-              "arguments": {
-                "reportName": "{{vars.input.records[0].name}}-{{arrow.utcnow().to('Asia/Kolkata').format('DD-MM-YYYY-HH:mm:ss')}}",
-                "kb_subCategory": "{% if 'login failures for user' in vars.input.records[0].name %}\n\"ACCOUNT_LOCKOUT\"\n{% elif 'Conhost exe CommandLine Path Traversal' in vars.input.records[0].name %}\n\"COMMAND_EXECUTION_POWERSHELL_SSH\"\n{% elif 'Heavy TCP Host Scan from' in vars.input.records[0].name %}\n\"PORT_SCAN_ACTIVITY\"\n{% elif 'Unauthorized Logic Modification' in vars.input.records[0].name %}\n\"OT\"\n{% elif 'initiated outbound communication' in vars.input.records[0].name %}\n\"OT\"\n{% elif 'Minor deviation detected in temperature' in vars.input.records[0].name %}\n\"OT\"\n{% elif 'Windows user' in vars.input.records[0].name %}\n\"ACCOUNT_MANIPULATION\"\n{% elif 'SQL Injection' in vars.input.records[0].name %}\n\"OT_SQL_INJECTION\"\n{% elif 'Process Memory Dump' in vars.input.records[0].name %}\n\"PROCESS_DUMP\"\n{% elif 'FortiEDR blocked an inconclusive or PUP' in vars.input.records[0].name %}\n\"MALWARE\"\n{% elif 'High Volume Data Transfer' in vars.input.records[0].name %}\n\"DATA_EXFILTRATION\"\n{% endif %}",
-                "alert_triagetaskid": "{{vars.input.records[0].triagetaskid}}"
-              },
-              "status": null,
-              "top": "165",
-              "left": "475",
-              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
-              "group": null,
-              "uuid": "5c6416ae-cfe2-44f2-ad7f-40711636ea72"
-            },
-            {
-              "@type": "WorkflowStep",
-              "name": "Create Attachment",
-              "description": null,
-              "arguments": {
-                "params": {
-                  "name": "{{vars.reportName | replace(\"/\",\"-\") | replace(\" \",\"_\") }}.pdf",
-                  "filename": "{{vars.reportName | replace(\"/\",\"-\") | replace(\" \",\"_\") }}.pdf",
-                  "description": "Triage Report Created By Agentic AI Connector",
-                  "request_headers": "",
-                  "multipart_headers": "",
-                  "extra_multipart_fields": ""
-                },
-                "version": "3.7.1",
-                "connector": "cyops_utilities",
-                "operation": "create_cyops_attachment",
-                "operationTitle": "File: Create Attachment from File",
-                "step_variables": []
-              },
-              "status": null,
-              "top": "1515",
-              "left": "475",
-              "stepType": "/api/3/workflow_step_types/0109f35d-090b-4a2b-bd8a-94cbc3508562",
-              "group": null,
-              "uuid": "dde2be90-d283-48e6-8b04-ec2efdba46c7"
-            },
-            {
-              "@type": "WorkflowStep",
-              "name": "Export Questions per Hypothesis",
-              "description": null,
-              "arguments": {
-                "questions": "{\n  \"H1 support questions\": {{vars.steps.Make_API_call_for_Result.data.logs | json_query('[?supports]') | json_query('[?contains(supports, `\"1\"`)]') | json_query('[].{question: question, agent: agent_hint, result: result}')}},\n  \"H1 weakening questions\": {{vars.steps.Make_API_call_for_Result.data.logs | json_query('[?weakens]') | json_query('[?contains(weakens, `\"1\"`)]')| json_query('[].{question: question, agent: agent_hint, result: result}')}},\n  \"H2 support questions\": {{vars.steps.Make_API_call_for_Result.data.logs | json_query('[?supports]') | json_query('[?contains(supports, `\"2\"`)]') | json_query('[].{question: question, agent: agent_hint, result: result}')}},\n  \"H2 weakening questions\": {{vars.steps.Make_API_call_for_Result.data.logs | json_query('[?weakens]') | json_query('[?contains(weakens, `\"2\"`)]')| json_query('[].{question: question, agent: agent_hint, result: result}')}},\n  \"H3 support questions\": {{vars.steps.Make_API_call_for_Result.data.logs | json_query('[?supports]') | json_query('[?contains(supports, `\"3\"`)]') | json_query('[].{question: question, agent: agent_hint, result: result}')}},\n  \"H3 weakening questions\": {{vars.steps.Make_API_call_for_Result.data.logs | json_query('[?weakens]') | json_query('[?contains(weakens, `\"3\"`)]')| json_query('[].{question: question, agent: agent_hint, result: result}')}},\n  \"H4 support questions\": {{vars.steps.Make_API_call_for_Result.data.logs | json_query('[?supports]') | json_query('[?contains(supports, `\"4\"`)]') | json_query('[].{question: question, agent: agent_hint, result: result}')}},\n  \"H4 weakening questions\": {{vars.steps.Make_API_call_for_Result.data.logs | json_query('[?weakens]') | json_query('[?contains(weakens, `\"4\"`)]')| json_query('[].{question: question, agent: agent_hint, result: result}')}},\n  \"H5 support questions\": {{vars.steps.Make_API_call_for_Result.data.logs | json_query('[?supports]') | json_query('[?contains(supports, `\"5\"`)]') | json_query('[].{question: question, agent: agent_hint, result: result}')}},\n  \"H5 weakening questions\": {{vars.steps.Make_API_call_for_Result.data.logs | json_query('[?weakens]') | json_query('[?contains(weakens, `\"5\"`)]')| json_query('[].{question: question, agent: agent_hint, result: result}')}}\n}",
-                "all_questions": "{{vars.steps.Make_API_call_for_Result.data.logs | json_query('[?question]') | json_query('[].{question: question, agent: agent_hint, result: result}')}}"
-              },
-              "status": null,
-              "top": "975",
-              "left": "475",
-              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
-              "group": null,
-              "uuid": "ecf3ef8e-80c3-4705-89e1-6ea3b0293286"
-            },
-            {
-              "@type": "WorkflowStep",
-              "name": "Generate Report",
-              "description": null,
-              "arguments": {
-                "name": "Agentic AI Investigation Report",
-                "params": {
-                  "alertid": "{{vars.input.records[0].id}}",
-                  "alertName": "{{vars.input.records[0].name}}",
-                  "kbQuestions": "{{vars.KB_questions}}",
-                  "outputFileName": "/tmp/{{vars.reportName  | replace(\"/\",\"-\") | replace(\" \",\"_\")}}.pdf",
-                  "investigationJSON": "{{vars.input_json}}"
-                },
-                "version": "1.0.0",
-                "connector": "agentic-ai-investigation-report",
-                "operation": "generate_investigation_pdf",
-                "operationTitle": "Generate Investigation Report",
-                "pickFromTenant": false,
-                "step_variables": []
-              },
-              "status": null,
-              "top": "1380",
-              "left": "475",
-              "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
-              "group": null,
-              "uuid": "ed29efe7-4599-4c0e-bc81-5c4a42701015"
-            },
-            {
-              "@type": "WorkflowStep",
-              "name": "Get KB Name",
-              "description": null,
-              "arguments": {
-                "params": {
-                  "iri": "/api/ai/agents/{{vars.task_id}}/result",
-                  "body": "",
-                  "method": "GET"
-                },
-                "version": "3.7.1",
-                "connector": "cyops_utilities",
-                "operation": "make_cyops_request",
-                "operationTitle": "FSR: Make FortiSOAR API Call",
-                "step_variables": []
-              },
-              "status": null,
-              "top": "570",
-              "left": "475",
-              "stepType": "/api/3/workflow_step_types/0109f35d-090b-4a2b-bd8a-94cbc3508562",
-              "group": null,
-              "uuid": "1564daca-7876-4ea1-bc63-fdd39d4b74fe"
-            },
-            {
-              "@type": "WorkflowStep",
-              "name": "Get Sub Category",
-              "description": null,
-              "arguments": {
-                "query": {
-                  "sort": [],
-                  "limit": 30,
-                  "logic": "AND",
-                  "filters": [
-                    {
-                      "type": "primitive",
-                      "field": "title",
-                      "value": "PowerShell / SSH Command Executed Investigation",
-                      "operator": "eq",
-                      "_operator": "eq"
-                    }
-                  ],
-                  "__selectFields": [
-                    "category",
-                    "subCategory",
-                    "content"
-                  ]
-                },
-                "module": "organizational_contexts?$limit=30",
-                "checkboxFields": true,
-                "step_variables": {
-                  "KB_questions": "{{vars.steps.Get_Sub_Category[0].content.split(\"\\n\")|  reject('==', '') | list}}"
-                }
-              },
-              "status": null,
-              "top": "705",
-              "left": "475",
-              "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928770",
-              "group": null,
-              "uuid": "ee21d238-0e68-43a1-b553-2183232998e9"
-            },
-            {
-              "@type": "WorkflowStep",
-              "name": "Make API call for Knowledge Base",
-              "description": null,
-              "arguments": {
-                "params": {
-                  "iri": "/api/query/organizational_contexts",
-                  "body": "{\n    \"logic\": \"AND\",\n    \"filters\": [\n        {\n            \"field\": \"category\",\n            \"operator\": \"like\",\n            \"_operator\": \"like\",\n            \"value\": \"%TIER_1%\",\n            \"type\": \"primitive\"\n        },\n        {\n            \"field\": \"subCategory\",\n            \"operator\": \"eq\",\n            \"_operator\": \"eq\",\n            \"value\": \"{{vars.kb_subCategory}}\",\n            \"type\": \"primitive\"\n        }\n    ]\n}",
-                  "method": "POST"
-                },
-                "version": "3.7.1",
-                "connector": "cyops_utilities",
-                "operation": "make_cyops_request",
-                "operationTitle": "FSR: Make FortiSOAR API Call",
-                "step_variables": {
-                  "KB_questions": "{{vars.steps.Make_API_call_for_Knowledge_Base.data['hydra:member'][0].content.split(\"\\n\")}}"
-                }
-              },
-              "status": null,
-              "top": "30",
-              "left": "125",
-              "stepType": "/api/3/workflow_step_types/0109f35d-090b-4a2b-bd8a-94cbc3508562",
-              "group": null,
-              "uuid": "5bb1236d-ed82-4eeb-aeaf-ad94e4b4af17"
-            },
-            {
-              "@type": "WorkflowStep",
-              "name": "Make API call for Result",
-              "description": null,
-              "arguments": {
-                "params": {
-                  "iri": "/api/ai/agents/{{vars.alert_triagetaskid}}/result",
-                  "body": "",
-                  "method": "GET"
-                },
-                "version": "3.7.1",
-                "connector": "cyops_utilities",
-                "operation": "make_cyops_request",
-                "operationTitle": "FSR: Make FortiSOAR API Call",
-                "step_variables": []
-              },
-              "status": null,
-              "top": "840",
-              "left": "475",
-              "stepType": "/api/3/workflow_step_types/0109f35d-090b-4a2b-bd8a-94cbc3508562",
-              "group": null,
-              "uuid": "c548d2ee-9843-402b-86b5-a6407303b0d7"
-            },
-            {
-              "@type": "WorkflowStep",
-              "name": "Start",
-              "description": null,
-              "arguments": {
-                "route": "3ea3273d-3943-4f53-844b-b298f04090be",
-                "resources": [
-                  "alerts"
-                ],
-                "__triggerLimit": true,
-                "inputVariables": [],
-                "step_variables": {
-                  "input": {
-                    "params": [],
-                    "records": "{{vars.input.records}}"
-                  }
-                },
-                "triggerOnSource": true,
-                "displayConditions": {
-                  "alerts": {
-                    "sort": [],
-                    "limit": 30,
-                    "logic": "AND",
-                    "filters": []
-                  }
-                },
-                "executeButtonText": "Execute",
-                "noRecordExecution": false,
-                "showToasterMessage": {
-                  "visible": false,
-                  "messageVisible": true
-                },
-                "triggerOnReplicate": false,
-                "singleRecordExecution": true
-              },
-              "status": null,
-              "top": "30",
-              "left": "475",
-              "stepType": "/api/3/workflow_step_types/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
-              "group": null,
-              "uuid": "b8569279-faad-499f-b632-5cc9647c7466"
-            },
-            {
-              "@type": "WorkflowStep",
-              "name": "Wait for Query To Complete",
-              "description": null,
-              "arguments": {
-                "rule": {
-                  "actions": [
-                    {
-                      "type": "resume_playbook",
-                      "enabled": true,
-                      "channel_uuid": "e2ce87c2-c55a-11ec-9d64-0242ac120002"
-                    }
-                  ],
-                  "is_active": true,
-                  "event_source": "crudhub"
-                },
-                "type": "TimeBased",
-                "delay": {
-                  "days": 0,
-                  "hours": 0,
-                  "minutes": 0,
-                  "seconds": 15
-                }
-              },
-              "status": null,
-              "top": "435",
-              "left": "475",
-              "stepType": "/api/3/workflow_step_types/6832e556-b9c7-497a-babe-feda3bd27dbf",
-              "group": null,
-              "uuid": "f6b1991a-9a1a-4304-821c-e7f2e7589dab"
-            }
-          ],
-          "routes": [
-            {
-              "@type": "WorkflowRoute",
-              "name": "Add All Questions to Input json -> Generate Report",
-              "targetStep": "/api/3/workflow_steps/ed29efe7-4599-4c0e-bc81-5c4a42701015",
-              "sourceStep": "/api/3/workflow_steps/aae1c231-d8df-40aa-8338-489a6b4524a5",
-              "label": null,
-              "isExecuted": false,
-              "group": null,
-              "uuid": "0b9be19b-3c45-497e-ae17-154eebba3c45"
-            },
-            {
-              "@type": "WorkflowRoute",
-              "name": "Conbine Json -> Copy of Conbine Json",
-              "targetStep": "/api/3/workflow_steps/aae1c231-d8df-40aa-8338-489a6b4524a5",
-              "sourceStep": "/api/3/workflow_steps/70b74c4d-4634-40e3-aa32-60b73f6f0b34",
-              "label": null,
-              "isExecuted": false,
-              "group": null,
-              "uuid": "65987c4a-3498-43df-990b-1b2a906aa391"
-            },
-            {
-              "@type": "WorkflowRoute",
-              "name": "Configuration -> Copy of Make API call for Knowledge Base",
-              "targetStep": "/api/3/workflow_steps/375da1eb-f7bc-4432-9c46-7be4b6aa862f",
-              "sourceStep": "/api/3/workflow_steps/5c6416ae-cfe2-44f2-ad7f-40711636ea72",
-              "label": null,
-              "isExecuted": false,
-              "group": null,
-              "uuid": "6206e868-e6af-4a04-8551-ad60d2bede69"
-            },
-            {
-              "@type": "WorkflowRoute",
-              "name": "Export Questions per Hypothesis -> Conbine Json",
-              "targetStep": "/api/3/workflow_steps/70b74c4d-4634-40e3-aa32-60b73f6f0b34",
-              "sourceStep": "/api/3/workflow_steps/ecf3ef8e-80c3-4705-89e1-6ea3b0293286",
-              "label": null,
-              "isExecuted": false,
-              "group": null,
-              "uuid": "621d04f2-9da7-4a12-b914-f4bd417c4f0a"
-            },
-            {
-              "@type": "WorkflowRoute",
-              "name": "Generate Report -> Create Attachment",
-              "targetStep": "/api/3/workflow_steps/dde2be90-d283-48e6-8b04-ec2efdba46c7",
-              "sourceStep": "/api/3/workflow_steps/ed29efe7-4599-4c0e-bc81-5c4a42701015",
-              "label": null,
-              "isExecuted": false,
-              "group": null,
-              "uuid": "e6bf9240-2b0b-4ea0-b96d-c7422ab64b8c"
-            },
-            {
-              "@type": "WorkflowRoute",
-              "name": "Get KB Name -> Get Sub Category",
-              "targetStep": "/api/3/workflow_steps/ee21d238-0e68-43a1-b553-2183232998e9",
-              "sourceStep": "/api/3/workflow_steps/1564daca-7876-4ea1-bc63-fdd39d4b74fe",
-              "label": null,
-              "isExecuted": false,
-              "group": null,
-              "uuid": "27b5ee5c-0ec7-474f-8f03-8b86007f53af"
-            },
-            {
-              "@type": "WorkflowRoute",
-              "name": "Get KB Record -> Wait for Query To Complete",
-              "targetStep": "/api/3/workflow_steps/f6b1991a-9a1a-4304-821c-e7f2e7589dab",
-              "sourceStep": "/api/3/workflow_steps/375da1eb-f7bc-4432-9c46-7be4b6aa862f",
-              "label": null,
-              "isExecuted": false,
-              "group": null,
-              "uuid": "8a6aa650-bce9-43bc-9bfb-a1af993380d3"
-            },
-            {
-              "@type": "WorkflowRoute",
-              "name": "Get Result -> Export Questions per Hypothesis",
-              "targetStep": "/api/3/workflow_steps/ecf3ef8e-80c3-4705-89e1-6ea3b0293286",
-              "sourceStep": "/api/3/workflow_steps/c548d2ee-9843-402b-86b5-a6407303b0d7",
-              "label": null,
-              "isExecuted": false,
-              "group": null,
-              "uuid": "6c21c757-a3c0-4364-b39b-4af3be3e32ef"
-            },
-            {
-              "@type": "WorkflowRoute",
-              "name": "Get Sub Category -> Make API call for Result",
-              "targetStep": "/api/3/workflow_steps/c548d2ee-9843-402b-86b5-a6407303b0d7",
-              "sourceStep": "/api/3/workflow_steps/ee21d238-0e68-43a1-b553-2183232998e9",
-              "label": null,
-              "isExecuted": false,
-              "group": null,
-              "uuid": "a59897c3-4c96-48c0-ac22-ea2a2444ad54"
-            },
-            {
-              "@type": "WorkflowRoute",
-              "name": "Start -> Configuration",
-              "targetStep": "/api/3/workflow_steps/5c6416ae-cfe2-44f2-ad7f-40711636ea72",
-              "sourceStep": "/api/3/workflow_steps/b8569279-faad-499f-b632-5cc9647c7466",
-              "label": null,
-              "isExecuted": false,
-              "group": null,
-              "uuid": "fc48667b-37b7-49f8-a88c-8d4890b2a9d5"
-            },
-            {
-              "@type": "WorkflowRoute",
-              "name": "Wait for Query To Complete -> Get KB Name",
-              "targetStep": "/api/3/workflow_steps/1564daca-7876-4ea1-bc63-fdd39d4b74fe",
-              "sourceStep": "/api/3/workflow_steps/f6b1991a-9a1a-4304-821c-e7f2e7589dab",
-              "label": null,
-              "isExecuted": false,
-              "group": null,
-              "uuid": "a1c260e7-d32d-4b43-a0cc-9a8f77937740"
-            }
-          ],
-          "groups": [],
-          "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
-          "playbookOrigin": "/api/3/picklists/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
-          "isEditable": true,
-          "uuid": "45b45fa3-b4b3-4bbc-97a1-998593be7c82",
-          "id": 640,
-          "owners": [],
-          "isPrivate": false,
-          "deletedAt": null,
-          "importedBy": [],
-          "recordTags": []
+            ],
+            "open": false
         }
-      ]
-    }
-  ],
-  "exported_tags": []
+    ],
+    "category": [
+        "Compliance and Reporting"
+    ],
+    "contributor": null,
+    "active": true,
+    "cs_compatible": true,
+    "system": false,
+    "playbook_collections": [],
+    "icon_small": "",
+    "icon_large": "",
+    "help_online": null,
+    "vendor_version": null
 }
